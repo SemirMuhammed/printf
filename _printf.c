@@ -13,7 +13,9 @@ int _printf(const char *format, ...)
 	int i = 0, c = 0, bc = 0, fs_c = 0;
 	char buf[BUF_SIZE];
 	va_list ap;
+	mod_t mod;
 
+	(void)mod;
 	if (format == NULL)
 		return (-1);
 
@@ -32,6 +34,7 @@ int _printf(const char *format, ...)
 		{
 			print_buffer(buf, &bc);
 			i++;
+			/* mod.flag = get_flag(format, &i); */
 			fs_c = handle_conversion(format, &i, buf, ap);
 			if (fs_c == -1)
 				return (-1);

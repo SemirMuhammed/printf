@@ -30,3 +30,76 @@ int print_hexa_upper(char buf[], va_list ap)
 	return (write(1, &buf[i], len));
 }
 
+/**
+ * print_non_string - calls write to print sting
+ * and prints non-printable characters as hex
+ * @buf: buffer
+ * @ap: argument parameter
+ *
+ * Return: number of characters printed
+ */
+int print_non_string(char buf[], va_list ap)
+{
+	int i = 0, bc = 0;
+	char *str = va_arg(ap, char *), ch = '0';
+
+	if (str == NULL)
+		return (-1);
+	while (str[i] != '\0')
+	{
+		if (str[i] >= 32 && str[i] < 127)
+			buf[bc++] = str[i++];
+		else
+		{
+			buf[bc++] = '\\';
+			buf[bc++] = 'x';
+			ch = '0';
+			if ((str[i] / 16) > 9)
+				ch = 'A' - 10;
+			buf[bc++] = ch + (str[i] / 16);
+			ch = '0';
+			if ((str[i] % 16) > 9)
+				ch = 'A' - 10;
+			buf[bc++] = ch + (str[i++] % 16);
+		}
+	}
+
+	return (write(1, &buf[0], _strlen(buf)));
+}
+
+/**
+ * print_pointer - calls write to print address of argument
+ * @buf: buffer
+ * @ap: argument parameter
+ *
+ * Return: number of characters printed
+ */
+int print_pointer(char buf[], va_list ap)
+{
+	int bc = BUF_SIZE - 1, len;
+	void *ptr = va_arg(ap, void *);
+	unsigned long address;
+
+	if (ptr == NULL)
+		return (-1);
+
+	address = (unsigned long)(ptr);
+	if (address == 0)
+		buf[bc--] = '0';
+	buf[BUF_SIZE] = '\0';
+	while (address)
+	{
+		if ((address % 16) > 9)
+			buf[bc--] = '0' + (address % 16) + 39;
+		else
+			buf[bc--] = '0' + (address % 16);
+		address /= 16;
+	}
+
+	buf[bc--] = 'X';
+	buf[bc] = '0';
+	len = BUF_SIZE - bc;
+
+	return (write(1, &buf[bc], len));
+
+}

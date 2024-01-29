@@ -23,6 +23,8 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 		{'o', print_octal},
 		{'x', print_hexa_lower},
 		{'X', print_hexa_upper},
+		{'S', print_non_string},
+		{'p', print_pointer},
 		{'\0', NULL}
 	};
 
