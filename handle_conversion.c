@@ -23,14 +23,10 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 		if (conv_list[j].sp == format[*i])
 			return (conv_list[j].func(buf, ap));
 
-	if (conv_list[j].sp == '\0')
-	{
-		if (format[*i] == '\0')
-			return (fs_c);
-		fs_c = write(1, "%%", 1);
-		fs_c += write(1, &format[*i], 1);
+	if (format[*i] == '\0')
 		return (fs_c);
-	}
+	fs_c = write(1, "%%", 1);
+	fs_c += write(1, &format[*i], 1);
 	return (fs_c);
 }
 
