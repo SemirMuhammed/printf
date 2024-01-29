@@ -47,6 +47,8 @@ int print_non_string(char buf[], va_list ap)
 		return (write(1, "(null)", 6));
 	while (str[i] != '\0')
 	{
+		if (str[i] < 0)
+			str[i] *= -1;
 		if (str[i] >= 32 && str[i] < 127)
 			buf[bc++] = str[i++];
 		else
@@ -87,7 +89,7 @@ int print_pointer(char buf[], va_list ap)
 	if (address == 0)
 		buf[bc--] = '0';
 	buf[BUF_SIZE] = '\0';
-	while (address)
+	while (address > 0)
 	{
 		if ((address % 16) > 9)
 			buf[bc--] = '0' + (address % 16) + 39;
