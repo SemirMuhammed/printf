@@ -44,7 +44,7 @@ int print_non_string(char buf[], va_list ap)
 	char *str = va_arg(ap, char *), ch = '0';
 
 	if (str == NULL)
-		return (-1);
+		return (write(1, "(null)", 6));
 	while (str[i] != '\0')
 	{
 		if (str[i] >= 32 && str[i] < 127)
@@ -81,7 +81,7 @@ int print_pointer(char buf[], va_list ap)
 	unsigned long address;
 
 	if (ptr == NULL)
-		return (-1);
+		return (write(1, "(nil)", 5));
 
 	address = (unsigned long)(ptr);
 	if (address == 0)
