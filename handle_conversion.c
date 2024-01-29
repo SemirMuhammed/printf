@@ -21,10 +21,15 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 
 	while (conv_list[++j].sp != '\0')
 		if (conv_list[j].sp == format[*i])
-			fs_c = conv_list[j].func(buf, ap);
+		{
+			(*i)++;
+			return (conv_list[j].func(buf, ap));
+		}
 
-	if (fs_c > 0)
-		(*i)++;
+	if (format[*i] == '\0')
+		return (fs_c);
+	fs_c = write(1, "%%", 1);
+	fs_c += write(1, &format[(*i)++], 1);
 
 	return (fs_c);
 }
