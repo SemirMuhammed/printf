@@ -17,11 +17,11 @@ int _printf(const char *format, ...)
 	if (format == NULL)
 		return (-1);
 	va_start(ap, format);
-	while (format[i] != '\0')
+	while (format && format[i] != '\0')
 	{
 		if (format[i] != '%')
 		{
-			buf[bc++] = format[i++];
+			buf[bc++] = format[i];
 			if (bc == BUF_SIZE)
 				print_buffer(buf, &bc);
 			c++;
@@ -29,9 +29,13 @@ int _printf(const char *format, ...)
 		else
 		{
 			print_buffer(buf, &bc);
+			++i;
 			fs_c = handle_conversion(format, &i, buf, ap);
+			if (fs_c == -1)
+				return (-1);
 			c += fs_c;
 		}
+		++i;
 	}
 
 	print_buffer(buf, &bc);
