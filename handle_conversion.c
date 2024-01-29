@@ -18,6 +18,11 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 		{'%', print_percent},
 		{'d', print_decimal},
 		{'i', print_integer},
+		{'b', print_binary},
+		{'u', print_unsigned},
+		{'o', print_octal},
+		{'x', print_hexa_lower},
+		{'X', print_hexa_upper},
 		{'\0', NULL}
 	};
 
