@@ -29,7 +29,6 @@ int _printf(const char *format, ...)
 		else
 		{
 			print_buffer(buf, &bc);
-			i++;
 			fs_c = handle_conversion(format, &i, buf, ap);
 			c += fs_c;
 		}

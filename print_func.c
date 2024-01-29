@@ -10,7 +10,7 @@
 void print_buffer(char *buf, int *bc)
 {
 	if (*bc > 0)
-		write(1, buf, *bc);
+		write(1, &buf[0], *bc);
 	*bc = 0;
 }
 
@@ -28,7 +28,7 @@ int print_char(char buf[], va_list ap)
 	buf[0] = c;
 	buf[1] = '\0';
 
-	return (write(1, buf, 1));
+	return (write(1, &buf[0], 1));
 }
 
 /**
@@ -45,7 +45,7 @@ int print_string(char buf[], va_list ap)
 	(void)(buf);
 	if (str == NULL)
 		str = "(null)";
-	return (write(1, str, _strlen(str)));
+	return (write(1, &str[0], _strlen(str)));
 }
 
 /**
