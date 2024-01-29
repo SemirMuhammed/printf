@@ -24,6 +24,9 @@ int handle_conversion(const char *format, int *i, char *buffer, va_list ap);
 int print_char(char buf[], va_list ap);
 int print_string(char buf[], va_list ap);
 int print_percent(char buf[], va_list ap);
+int print_decimal(char buf[], va_list ap);
+int print_integer(char buf[], va_list ap);
+char *int_to_string(int num);
 
 int _strlen(char *str);
 

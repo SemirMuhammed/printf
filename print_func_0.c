@@ -61,3 +61,42 @@ int print_percent(char buf[], va_list ap)
 	(void)(ap);
 	return (write(1, "%%", 1));
 }
+
+/**
+ * print_decimal - calls write to print decimal
+ * @buf: buffer
+ * @ap: argument parameter
+ *
+ * Return: number of characters printed
+ */
+int print_decimal(char buf[], va_list ap)
+{
+	int i = 0, len;
+	long int num = va_arg(ap, int), decimal;
+
+	if (num == 0)
+		return (write(1, "0", 1));
+	if (num < 0)
+	{
+		num *= -1;
+		buf[0] = '-';
+		i++;
+	}
+	decimal = num;
+	while (decimal != 0)
+	{
+		decimal /= 10;
+		i++;
+	}
+
+	len = i;
+	buf[i--] = '\0';
+	while (num != 0)
+	{
+		buf[i--] = '0' + (num % 10);
+		num /= 10;
+	}
+
+	return (write(1, &buf[0], len));
+}
+

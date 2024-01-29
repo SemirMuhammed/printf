@@ -16,6 +16,8 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 		{'c', print_char},
 		{'s', print_string},
 		{'%', print_percent},
+		{'d', print_decimal},
+		{'i', print_integer},
 		{'\0', NULL}
 	};
 

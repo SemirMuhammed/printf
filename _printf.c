@@ -16,8 +16,10 @@ int _printf(const char *format, ...)
 
 	if (format == NULL)
 		return (-1);
+
 	va_start(ap, format);
-	while (format[i] != '\0')
+
+	for (; format[i] != '\0'; i++)
 	{
 		if (format[i] != '%')
 		{
@@ -29,13 +31,12 @@ int _printf(const char *format, ...)
 		else
 		{
 			print_buffer(buf, &bc);
-			++i;
+			i++;
 			fs_c = handle_conversion(format, &i, buf, ap);
 			if (fs_c == -1)
 				return (-1);
 			c += fs_c;
 		}
-		++i;
 	}
 
 	print_buffer(buf, &bc);
