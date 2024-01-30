@@ -55,11 +55,9 @@ int print_non_string(char buf[], va_list ap)
 		{
 			buf[bc++] = '\\';
 			buf[bc++] = 'x';
-			ch = '0';
 			if ((str[i] / 16) > 9)
 				ch = 'A' - 10;
 			buf[bc++] = ch + (str[i] / 16);
-			ch = '0';
 			if ((str[i] % 16) > 9)
 				ch = 'A' - 10;
 			buf[bc++] = ch + (str[i++] % 16);
