@@ -120,9 +120,9 @@ int print_decimal(char buf[], va_list ap, mod_t mod)
 	len = BUF_SIZE - ++bc;
 	if (mod.precision == 0 && bc == BUF_SIZE - 2
 		&& buf[bc] == '0' && mod.width == 0)
-		return (0); /* printf(".0d", 0)  no char is printed */
+		return (0);
 	if (mod.precision == 0 && bc == BUF_SIZE - 2 && buf[bc] == '0')
-		buf[bc] = padd = ' '; /* mod.width is displayed with padding ' ' */
+		buf[bc] = padd = ' ';
 	if (mod.precision > 0 && mod.precision < len)
 		padd = ' ';
 	while (mod.precision > len)
