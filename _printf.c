@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdio.h>
 
 /**
  * _printf - produces output to stdout (standard output stream)
@@ -34,7 +35,10 @@ int _printf(const char *format, ...)
 		{
 			print_buffer(buf, &bc);
 			i++;
-			/* mod.flag = get_flag(format, &i); */
+			mod.flag = get_flag(format, &i);
+			mod.width = get_width(format, &i);
+			mod.precision = get_precision(format, &i);
+			mod.length = get_length(format, &i);
 			fs_c = handle_conversion(format, &i, buf, ap);
 			if (fs_c == -1)
 				return (-1);

@@ -5,9 +5,17 @@
 #include <unistd.h>
 
 #define BUF_SIZE 1024
-#define F_PLUS 0
-#define F_SPACE 1
-#define F_HASHTAG 2
+
+#define F_NULL 0
+#define F_PLUS 1
+#define F_SPACE 2
+#define F_HASHTAG 4
+#define F_ZERO 8
+#define F_MINUS 16
+
+#define L_NULL 0
+#define L_LONG 1
+#define L_SHORT 2
 
 /**
  * struct conv - Stucture of conversion specifiers
@@ -34,10 +42,16 @@ typedef struct flag
 /**
  * struct mod - Stucture of format modifier
  * @flag: flag mod
+ * @width: flag width
+ * @precision: flag precision
+ * @length: flag length
  */
 typedef struct mod
 {
 	int flag;
+	int width;
+	int precision;
+	int length;
 } mod_t;
 
 
@@ -45,6 +59,9 @@ int _printf(const char *format, ...);
 void print_buffer(char *buf, int *bc);
 int handle_conversion(const char *format, int *i, char *buffer, va_list ap);
 int get_flag(const char *format, int *i);
+int get_width(const char *format, int *i);
+int get_precision(const char *format, int *i);
+int get_length(const char *format, int *i);
 
 int print_char(char buf[], va_list ap);
 int print_string(char buf[], va_list ap);

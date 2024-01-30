@@ -9,22 +9,104 @@
  */
 int get_flag(const char *format, int *i)
 {
-	int fc = 0;
+	int fc = 0, flags = F_NULL;
 	flag_t flg[] = {
 		{'+', F_PLUS},
 		{' ', F_SPACE},
 		{'#', F_HASHTAG},
-		{'\0', '\0'}
+		{'#', F_ZERO},
+		{'#', F_MINUS},
+		{'\0', F_NULL}
 	};
 
-	while (flg[fc].f_char)
+	while (format[(*i)] != '\0')
 	{
-		if (flg[fc++].f_char == format[*i])
+		while (flg[fc].f_char)
 		{
-			write(1, &format[*i], 1);
-			(*i)++;
-			return (flg[fc - 1].f_int);
+			if (flg[fc].f_char == format[*i])
+			{
+				(*i)++;
+				flags |= (flg[fc].f_int);
+				break;
+			}
+			fc++;
 		}
+		if (flg[fc].f_char == '\0')
+			break;
+		fc = 0;
 	}
-	return (-1);
+	return (flags);
+}
+
+/**
+ * get_length - identify the length attribute
+ * @format: format
+ * @i: iteration of format
+ *
+ * Return: length indicator
+ */
+int get_length(const char *format, int *i)
+{
+	int length = L_NULL;
+
+	if (format[*i] == 'l')
+		length = L_LONG;
+	if (format[*i] == 'h')
+		length = L_SHORT;
+	if (length)
+		(*i)++;
+	return (length);
+}
+
+/**
+ * get_width - identify the width attribute
+ * @format: format
+ * @i: iteration of format
+ *
+ * Return: field width
+ */
+int get_width(const char *format, int *i)
+{
+	int width = 0;
+
+	while (format[*i] != '\0')
+	{
+		if (format[*i] >= '0' && format[*i] <= '9')
+		{
+			width *= 10;
+			width += format[(*i)++] - '0';
+		}
+		else
+			break;
+	}
+
+	return (width);
+}
+
+/**
+ * get_precision - identify the precision attribute
+ * @format: format
+ * @i: iteration of format
+ *
+ * Return: precision number
+ */
+int get_precision(const char *format, int *i)
+{
+	int precision = 0;
+
+	if (format[*i] != '.')
+		return (precision);
+	(*i)++;
+	while (format[*i] != '\0')
+	{
+		if (format[*i] >= '0' && format[*i] <= '9')
+		{
+			precision *= 10;
+			precision += format[(*i)++] - '0';
+		}
+		else
+			break;
+	}
+
+	return (precision);
 }
