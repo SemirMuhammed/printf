@@ -41,8 +41,7 @@ int print_hexa_upper(char buf[], va_list ap)
 int print_non_string(char buf[], va_list ap)
 {
 	int i = 0, bc = 0;
-	char *str = va_arg(ap, char *);
-	char *hex = "0123456789abcdef";
+	char *str = va_arg(ap, char *), ch = '0';
 
 	if (str == NULL)
 		return (write(1, "(null)", 6));
@@ -56,12 +55,19 @@ int print_non_string(char buf[], va_list ap)
 		{
 			buf[bc++] = '\\';
 			buf[bc++] = 'x';
-			buf[bc++] = hex[str[i] / 16];
-			buf[bc++] = hex[str[i++] % 16];
+			ch = '0';
+			if ((str[i] / 16) > 9)
+				ch = 'A' - 10;
+			buf[bc++] = ch + (str[i] / 16);
+			ch = '0';
+			if ((str[i] % 16) > 9)
+				ch = 'A' - 10;
+			buf[bc++] = ch + (str[i++] % 16);
 		}
 	}
+	buf[bc] = '\0';
 
-	return (write(1, &buf[0], _strlen(buf)));
+	return (write(1, &buf[0], bc));
 }
 
 /**
@@ -76,22 +82,24 @@ int print_pointer(char buf[], va_list ap)
 	int bc = BUF_SIZE - 1, len;
 	void *ptr = va_arg(ap, void *);
 	unsigned long address;
-	char *hex = "0123456789abcdef";
 
 	if (ptr == NULL)
 		return (write(1, "(nil)", 5));
 
+	buf[BUF_SIZE] = '\0';
 	address = (unsigned long)(ptr);
 	if (address == 0)
 		buf[bc--] = '0';
-	buf[BUF_SIZE] = '\0';
 	while (address > 0)
 	{
-		buf[bc--] = hex[address % 16];
+		if ((address % 16) > 9)
+			buf[bc--] = '0' + (address % 16) + 39;
+		else
+			buf[bc--] = '0' + (address % 16);
 		address /= 16;
 	}
 
-	buf[bc--] = 'X';
+	buf[bc--] = 'x';
 	buf[bc] = '0';
 	len = BUF_SIZE - bc;
 
