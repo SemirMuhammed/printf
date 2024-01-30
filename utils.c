@@ -33,7 +33,7 @@ long int convert_size_number(long int num, mod_t mod)
 }
 
 /**
- * convert_size_unsgnd - Casts a number to the specified size
+ * convert_size_unsign - Casts a number to the specified size
  * @num: Number to be casted
  * @mod: Structure of Modifiers
  *

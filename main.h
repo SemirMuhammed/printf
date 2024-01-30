@@ -56,7 +56,7 @@ typedef struct conv
 
 int _printf(const char *format, ...);
 void print_buffer(char *buf, int *bc);
-int handle_conv(const char *format, int *i,char *buffer, va_list ap, mod_t mod);
+int handle_conv(const char *format, int *i, char buf[], va_list ap, mod_t mod);
 int get_flag(const char *format, int *i);
 int get_width(const char *format, int *i);
 int get_precision(const char *format, int *i);
@@ -81,5 +81,11 @@ int _strlen(char *str);
 char *int_to_string(int num);
 long int convert_size_number(long int num, mod_t mod);
 long int convert_size_unsign(unsigned long int num, mod_t mod);
+
+int ext_decimal(mod_t mod, char padd, char flag_ch
+		, int bc, char buf[], int len);
+int ext_unsign(mod_t mod, char padd, int bc, char buf[], int len);
+int ext_pointer(mod_t mod, int len, int padd
+		, int bc, char flag_ch, char buf[]);
 
 #endif /* MAIN_H */

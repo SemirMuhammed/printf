@@ -1,11 +1,12 @@
 #include "main.h"
 
 /**
- * handle_conversion - handles format specifiers based on their type
+ * handle_conv - handles format specifiers based on their type
  * @format: format
  * @i: iteration of format
  * @buf: buffer
  * @ap: list of argument parameters
+ * @mod: modifier
  *
  * Return: 1 or 2
  */

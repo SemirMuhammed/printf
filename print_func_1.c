@@ -52,7 +52,7 @@ int print_binary(char buf[], va_list ap, mod_t mod)
  */
 int print_unsigned(char buf[], va_list ap, mod_t mod)
 {
-	int i = 0, len, bc = BUF_SIZE - 1;
+	int len, bc = BUF_SIZE - 1;
 	unsigned long int num = va_arg(ap, unsigned int);
 	char padd = ' ';
 
@@ -67,39 +67,7 @@ int print_unsigned(char buf[], va_list ap, mod_t mod)
 	}
 
 	len = BUF_SIZE - ++bc;
-	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
-		return (0); /* printf(".0d", 0)  no char is printed */
-
-	if (mod.precision > 0 && mod.precision < len)
-		padd = ' ';
-
-	while (mod.precision > len)
-	{
-		buf[--bc] = '0';
-		len++;
-	}
-
-	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
-		padd = '0';
-
-	if (mod.width > len)
-	{
-		for (i = 0; i < mod.width - len; i++)
-			buf[i] = padd;
-
-		buf[i] = '\0';
-
-		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
-		{
-			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
-		}
-		else /* Asign extra char to left of padding [padd>buf]*/
-		{
-			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
-		}
-	}
-
-	return (write(1, &buf[bc], len));
+	return (ext_unsign(mod, padd, bc, buf, len));
 }
 
 /**
@@ -112,7 +80,7 @@ int print_unsigned(char buf[], va_list ap, mod_t mod)
  */
 int print_octal(char buf[], va_list ap, mod_t mod)
 {
-	int i = 0, len, bc = BUF_SIZE - 1;
+	int len, bc = BUF_SIZE - 1;
 	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
 	char padd = ' ';
 
@@ -129,39 +97,7 @@ int print_octal(char buf[], va_list ap, mod_t mod)
 		buf[bc--] = '0';
 
 	len = BUF_SIZE - ++bc;
-	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
-		return (0); /* printf(".0d", 0)  no char is printed */
-
-	if (mod.precision > 0 && mod.precision < len)
-		padd = ' ';
-
-	while (mod.precision > len)
-	{
-		buf[--bc] = '0';
-		len++;
-	}
-
-	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
-		padd = '0';
-
-	if (mod.width > len)
-	{
-		for (i = 0; i < mod.width - len; i++)
-			buf[i] = padd;
-
-		buf[i] = '\0';
-
-		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
-		{
-			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
-		}
-		else /* Asign extra char to left of padding [padd>buf]*/
-		{
-			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
-		}
-	}
-
-	return (write(1, &buf[bc], len));
+	return (ext_unsign(mod, padd, bc, buf, len));
 }
 
 /**
@@ -174,7 +110,7 @@ int print_octal(char buf[], va_list ap, mod_t mod)
  */
 int print_hexa_lower(char buf[], va_list ap, mod_t mod)
 {
-	int bc = BUF_SIZE - 1, len, i;
+	int bc = BUF_SIZE - 1, len;
 	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
 	char padd = ' ';
 
@@ -197,38 +133,6 @@ int print_hexa_lower(char buf[], va_list ap, mod_t mod)
 	}
 
 	len = BUF_SIZE - ++bc;
-	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
-		return (0); /* printf(".0d", 0)  no char is printed */
-
-	if (mod.precision > 0 && mod.precision < len)
-		padd = ' ';
-
-	while (mod.precision > len)
-	{
-		buf[--bc] = '0';
-		len++;
-	}
-
-	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
-		padd = '0';
-
-	if (mod.width > len)
-	{
-		for (i = 0; i < mod.width - len; i++)
-			buf[i] = padd;
-
-		buf[i] = '\0';
-
-		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
-		{
-			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
-		}
-		else /* Asign extra char to left of padding [padd>buf]*/
-		{
-			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
-		}
-	}
-
-	return (write(1, &buf[bc], len));
+	return (ext_unsign(mod, padd, bc, buf, len));
 }
 

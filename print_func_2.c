@@ -10,7 +10,7 @@
  */
 int print_hexa_upper(char buf[], va_list ap, mod_t mod)
 {
-	int bc = BUF_SIZE - 1, len, i;
+	int bc = BUF_SIZE - 1, len;
 	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
 	char padd = ' ';
 
@@ -33,39 +33,7 @@ int print_hexa_upper(char buf[], va_list ap, mod_t mod)
 	}
 
 	len = BUF_SIZE - ++bc;
-	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
-		return (0); /* printf(".0d", 0)  no char is printed */
-
-	if (mod.precision > 0 && mod.precision < len)
-		padd = ' ';
-
-	while (mod.precision > len)
-	{
-		buf[--bc] = '0';
-		len++;
-	}
-
-	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
-		padd = '0';
-
-	if (mod.width > len)
-	{
-		for (i = 0; i < mod.width - len; i++)
-			buf[i] = padd;
-
-		buf[i] = '\0';
-
-		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
-		{
-			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
-		}
-		else /* Asign extra char to left of padding [padd>buf]*/
-		{
-			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
-		}
-	}
-
-	return (write(1, &buf[bc], len));
+	return (ext_unsign(mod, padd, bc, buf, len));
 }
 
 /**
@@ -120,7 +88,7 @@ int print_non_string(char buf[], va_list ap, mod_t mod)
  */
 int print_pointer(char buf[], va_list ap, mod_t mod)
 {
-	int bc = BUF_SIZE - 1, len = 2, i, padd_start = 1;
+	int bc = BUF_SIZE - 1, len = 2;
 	void *ptr = va_arg(ap, void *);
 	unsigned long address;
 	char flag_ch = 0, padd = ' ';
@@ -149,45 +117,7 @@ int print_pointer(char buf[], va_list ap, mod_t mod)
 		flag_ch = '+', len++;
 	else if (mod.flag & F_SPACE)
 		flag_ch = ' ', len++;
-	
-	if (mod.width > len)
-	{
-		for (i = 3; i < mod.width - len + 3; i++)
-			buf[i] = padd;
-		buf[i] = '\0';
-		if (mod.flag & F_MINUS && padd == ' ')/* Asign extra char to left of buf */
-		{
-			buf[--bc] = 'x';
-			buf[--bc] = '0';
-			if (flag_ch)
-				buf[--bc] = flag_ch;
-			return (write(1, &buf[bc], len) + write(1, &buf[3], i - 3));
-		}
-		else if (!(mod.flag & F_MINUS) && padd == ' ')/* extra char to left of buf */
-		{
-			buf[--bc] = 'x';
-			buf[--bc] = '0';
-			if (flag_ch)
-				buf[--bc] = flag_ch;
-			return (write(1, &buf[3], i - 3) + write(1, &buf[bc], len));
-		}
-		else if (!(mod.flag & F_MINUS) && padd == '0')/* extra char to left of padd */
-		{
-			if (flag_ch)
-				buf[--padd_start] = flag_ch;
-			buf[1] = '0';
-			buf[2] = 'x';
-			return (write(1, &buf[padd_start], i - padd_start) +
-				write(1, &buf[bc], len - (1 - padd_start) - 2));
-		}
-	}
-	buf[bc--] = 'x';
-	buf[bc] = '0';
-	if (flag_ch)
-		buf[--bc] = flag_ch;
-	len = BUF_SIZE - bc;
-
-	return (write(1, &buf[bc], len));
+	return (ext_pointer(mod, len, padd, bc, flag_ch, buf));
 }
 
 /**

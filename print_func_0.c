@@ -94,7 +94,7 @@ int print_percent(char buf[], va_list ap, mod_t mod)
  */
 int print_decimal(char buf[], va_list ap, mod_t mod)
 {
-	int bc = BUF_SIZE - 1, len, i, padd_start = 1;
+	int bc = BUF_SIZE - 1, len;
 	long int num = va_arg(ap, int);
 	char padd = ' ', flag_ch = 0;
 
@@ -118,7 +118,8 @@ int print_decimal(char buf[], va_list ap, mod_t mod)
 		num /= 10;
 	}
 	len = BUF_SIZE - ++bc;
-	if (mod.precision == 0 && bc == BUF_SIZE - 2 && buf[bc] == '0' && mod.width == 0)
+	if (mod.precision == 0 && bc == BUF_SIZE - 2
+		&& buf[bc] == '0' && mod.width == 0)
 		return (0); /* printf(".0d", 0)  no char is printed */
 	if (mod.precision == 0 && bc == BUF_SIZE - 2 && buf[bc] == '0')
 		buf[bc] = padd = ' '; /* mod.width is displayed with padding ' ' */
@@ -128,33 +129,7 @@ int print_decimal(char buf[], va_list ap, mod_t mod)
 		buf[--bc] = '0', len++;
 	if (flag_ch != 0)
 		len++;
-	if (mod.width > len)
-	{
-		for (i = 1; i < mod.width - len + 1; i++)
-			buf[i] = padd;
-		buf[i] = '\0';
-		if (mod.flag & F_MINUS && padd == ' ')/* Asign extra char to left of buf */
-		{
-			if (flag_ch)
-				buf[--bc] = flag_ch;
-			return (write(1, &buf[bc], len) + write(1, &buf[1], i - 1));
-		}
-		else if (!(mod.flag & F_MINUS) && padd == ' ')/* extra char to left of buff */
-		{
-			if (flag_ch)
-				buf[--bc] = flag_ch;
-			return (write(1, &buf[1], i - 1) + write(1, &buf[bc], len));
-		}
-		else if (!(mod.flag & F_MINUS) && padd == '0')/* extra char to left of padd */
-		{
-			if (flag_ch)
-				buf[--padd_start] = flag_ch;
-			return (write(1, &buf[padd_start], i - padd_start) +
-				write(1, &buf[bc], len - (1 - padd_start)));
-		}
-	}
-	if (flag_ch)
-		buf[--bc] = flag_ch;
-	return (write(1, &buf[bc], len));
+
+	return (ext_decimal(mod, padd, flag_ch, bc, buf, len));
 }
 
