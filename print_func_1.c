@@ -118,7 +118,7 @@ int print_octal(char buf[], va_list ap, mod_t mod)
 
 	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		buf[bc--] = '0';
+		return (write(1, "0", 1));
 	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
@@ -180,7 +180,7 @@ int print_hexa_lower(char buf[], va_list ap, mod_t mod)
 
 	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		buf[bc--] = '0';
+		return (write(1, "0", 1));
 	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
