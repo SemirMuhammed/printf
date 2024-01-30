@@ -118,10 +118,10 @@ int print_decimal(char buf[], va_list ap, mod_t mod)
 		num /= 10;
 	}
 	len = BUF_SIZE - ++bc;
-	if (mod.precision == 0 && bc == BUF_SIZE - 2
+	if (mod.precision == 0 && bc == BUF_SIZE - 1
 		&& buf[bc] == '0' && mod.width == 0)
 		return (0);
-	if (mod.precision == 0 && bc == BUF_SIZE - 2 && buf[bc] == '0')
+	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
 		buf[bc] = padd = ' ';
 	if (mod.precision > 0 && mod.precision < len)
 		padd = ' ';
