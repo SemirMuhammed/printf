@@ -52,28 +52,54 @@ int print_binary(char buf[], va_list ap, mod_t mod)
  */
 int print_unsigned(char buf[], va_list ap, mod_t mod)
 {
-	int i = 0, len;
-	unsigned long int num = va_arg(ap, unsigned int), decimal;
+	int i = 0, len, bc = BUF_SIZE - 1;
+	unsigned long int num = va_arg(ap, unsigned int);
+	char padd = ' ';
 
-	num = convert_size_unsigned(num, mod);
+	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		return (write(1, "0", 1));
-	decimal = num;
-	while (decimal != 0)
-	{
-		decimal /= 10;
-		i++;
-	}
-
-	len = i;
-	buf[i--] = '\0';
+		buf[i--] = '0';
+	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
-		buf[i--] = '0' + (num % 10);
+		buf[bc--] = '0' + (num % 10);
 		num /= 10;
 	}
 
-	return (write(1, &buf[0], len));
+	len = BUF_SIZE - ++bc;
+	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
+		return (0); /* printf(".0d", 0)  no char is printed */
+
+	if (mod.precision > 0 && mod.precision < len)
+		padd = ' ';
+
+	while (mod.precision > len)
+	{
+		buf[--bc] = '0';
+		len++;
+	}
+
+	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
+		padd = '0';
+
+	if (mod.width > len)
+	{
+		for (i = 0; i < mod.width - len; i++)
+			buf[i] = padd;
+
+		buf[i] = '\0';
+
+		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
+		{
+			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
+		}
+		else /* Asign extra char to left of padding [padd>buf]*/
+		{
+			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
+		}
+	}
+
+	return (write(1, &buf[bc], len));
 }
 
 /**
@@ -86,25 +112,56 @@ int print_unsigned(char buf[], va_list ap, mod_t mod)
  */
 int print_octal(char buf[], va_list ap, mod_t mod)
 {
-	int i = BUF_SIZE - 1, len;
+	int i = 0, len, bc = BUF_SIZE - 1;
 	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
+	char padd = ' ';
 
-	num = convert_size_unsigned(num, mod);
+	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		buf[i--] = '0';
+		buf[bc--] = '0';
 	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
-		buf[i--] = '0' + (num % 8);
+		buf[bc--] = '0' + (num % 8);
 		num /= 8;
 	}
 	if (mod.flag & F_HASHTAG && HASH_num != 0)
-		buf[i--] = '0';
+		buf[bc--] = '0';
 
-	i++;
-	len = BUF_SIZE - i;
+	len = BUF_SIZE - ++bc;
+	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
+		return (0); /* printf(".0d", 0)  no char is printed */
 
-	return (write(1, &buf[i], len));
+	if (mod.precision > 0 && mod.precision < len)
+		padd = ' ';
+
+	while (mod.precision > len)
+	{
+		buf[--bc] = '0';
+		len++;
+	}
+
+	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
+		padd = '0';
+
+	if (mod.width > len)
+	{
+		for (i = 0; i < mod.width - len; i++)
+			buf[i] = padd;
+
+		buf[i] = '\0';
+
+		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
+		{
+			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
+		}
+		else /* Asign extra char to left of padding [padd>buf]*/
+		{
+			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
+		}
+	}
+
+	return (write(1, &buf[bc], len));
 }
 
 /**
@@ -117,25 +174,61 @@ int print_octal(char buf[], va_list ap, mod_t mod)
  */
 int print_hexa_lower(char buf[], va_list ap, mod_t mod)
 {
-	int i = BUF_SIZE - 1, len;
-	unsigned long int num = va_arg(ap, unsigned int);
+	int bc = BUF_SIZE - 1, len, i;
+	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
+	char padd = ' ';
 
-	num = convert_size_unsigned(num, mod);
+	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		buf[i--] = '0';
+		buf[bc--] = '0';
 	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
 		if ((num % 16) > 9)
-			buf[i--] = '0' + (num % 16) + 39;
+			buf[bc--] = '0' + (num % 16) + 39;
 		else
-			buf[i--] = '0' + (num % 16);
+			buf[bc--] = '0' + (num % 16);
 		num /= 16;
 	}
+	if (mod.flag & F_HASHTAG && HASH_num != 0)
+	{
+		buf[bc--] = 'x';
+		buf[bc--] = '0';
+	}
 
-	i++;
-	len = BUF_SIZE - i;
+	len = BUF_SIZE - ++bc;
+	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
+		return (0); /* printf(".0d", 0)  no char is printed */
 
-	return (write(1, &buf[i], len));
+	if (mod.precision > 0 && mod.precision < len)
+		padd = ' ';
+
+	while (mod.precision > len)
+	{
+		buf[--bc] = '0';
+		len++;
+	}
+
+	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
+		padd = '0';
+
+	if (mod.width > len)
+	{
+		for (i = 0; i < mod.width - len; i++)
+			buf[i] = padd;
+
+		buf[i] = '\0';
+
+		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
+		{
+			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
+		}
+		else /* Asign extra char to left of padding [padd>buf]*/
+		{
+			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
+		}
+	}
+
+	return (write(1, &buf[bc], len));
 }
 

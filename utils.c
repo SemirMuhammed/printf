@@ -16,13 +16,30 @@ int _strlen(char *str)
 }
 
 /**
- * convert_size_unsgnd - Casts a number to the specified size
- * @num: Number to be casted
- * @size: Number indicating the type to be casted
+ * convert_size_number - Casts a number to the specified size
+ * @num: Number to be casted.
+ * @mod: Structure of Modifiers
  *
  * Return: Casted value of num
  */
-long int convert_size_unsigned(unsigned long int num, mod_t mod)
+long int convert_size_number(long int num, mod_t mod)
+{
+	if (mod.length == L_LONG)
+		return (num);
+	else if (mod.length == L_SHORT)
+		return ((short)num);
+
+	return ((int)num);
+}
+
+/**
+ * convert_size_unsgnd - Casts a number to the specified size
+ * @num: Number to be casted
+ * @mod: Structure of Modifiers
+ *
+ * Return: Casted value of num
+ */
+long int convert_size_unsign(unsigned long int num, mod_t mod)
 {
 	if (mod.length == L_LONG)
 		return (num);

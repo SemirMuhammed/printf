@@ -10,26 +10,62 @@
  */
 int print_hexa_upper(char buf[], va_list ap, mod_t mod)
 {
-	int i = BUF_SIZE - 1, len;
-	unsigned long int num = va_arg(ap, unsigned int);
+	int bc = BUF_SIZE - 1, len, i;
+	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
+	char padd = ' ';
 
-	num = convert_size_unsigned(num, mod);
+	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		buf[i--] = '0';
+		buf[bc--] = '0';
 	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
 		if ((num % 16) > 9)
-			buf[i--] = '0' + (num % 16) + 7;
+			buf[bc--] = '0' + (num % 16) + 7;
 		else
-			buf[i--] = '0' + (num % 16);
+			buf[bc--] = '0' + (num % 16);
 		num /= 16;
 	}
+	if (mod.flag & F_HASHTAG && HASH_num != 0)
+	{
+		buf[bc--] = 'X';
+		buf[bc--] = '0';
+	}
 
-	i++;
-	len = BUF_SIZE - i;
+	len = BUF_SIZE - ++bc;
+	if (mod.precision == 0 && bc == BUF_SIZE - 1 && buf[bc] == '0')
+		return (0); /* printf(".0d", 0)  no char is printed */
 
-	return (write(1, &buf[i], len));
+	if (mod.precision > 0 && mod.precision < len)
+		padd = ' ';
+
+	while (mod.precision > len)
+	{
+		buf[--bc] = '0';
+		len++;
+	}
+
+	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
+		padd = '0';
+
+	if (mod.width > len)
+	{
+		for (i = 0; i < mod.width - len; i++)
+			buf[i] = padd;
+
+		buf[i] = '\0';
+
+		if (mod.flag & F_MINUS) /* Asign extra char to left of buf [buf>padd]*/
+		{
+			return (write(1, &buf[bc], len) + write(1, &buf[0], i));
+		}
+		else /* Asign extra char to left of padding [padd>buf]*/
+		{
+			return (write(1, &buf[0], i) + write(1, &buf[bc], len));
+		}
+	}
+
+	return (write(1, &buf[bc], len));
 }
 
 /**
@@ -84,9 +120,10 @@ int print_non_string(char buf[], va_list ap, mod_t mod)
  */
 int print_pointer(char buf[], va_list ap, mod_t mod)
 {
-	int bc = BUF_SIZE - 1, len;
+	int bc = BUF_SIZE - 1, len = 2, i, padd_start = 1;
 	void *ptr = va_arg(ap, void *);
 	unsigned long address;
+	char flag_ch = 0, padd = ' ';
 
 	(void)(mod);
 	if (ptr == NULL)
@@ -103,18 +140,52 @@ int print_pointer(char buf[], va_list ap, mod_t mod)
 		else
 			buf[bc--] = '0' + (address % 16);
 		address /= 16;
+		len++;
 	}
 
-	buf[bc--] = 'x';
-	buf[bc] = '0';
+	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
+		padd = '0';
 	if (mod.flag & F_PLUS)
-		buf[--bc] = '+';
+		flag_ch = '+', len++;
 	else if (mod.flag & F_SPACE)
-		buf[--bc] = ' ';
-	len = BUF_SIZE - bc;
-
-	return (write(1, &buf[bc], len));
-
+		flag_ch = ' ', len++;
+	
+	if (mod.width > len)
+	{
+		for (i = 3; i < mod.width - len + 3; i++)
+			buf[i] = padd;
+		buf[i] = '\0';
+		if (mod.flag & F_MINUS && padd == ' ')/* Asign extra char to left of buf */
+		{
+			buf[--bc] = 'x';
+			buf[--bc] = '0';
+			if (flag_ch)
+				buf[--bc] = flag_ch;
+			return (write(1, &buf[bc], len) + write(1, &buf[3], i - 3));
+		}
+		else if (!(mod.flag & F_MINUS) && padd == ' ')/* extra char to left of buf */
+		{
+			buf[--bc] = 'x';
+			buf[--bc] = '0';
+			if (flag_ch)
+				buf[--bc] = flag_ch;
+			return (write(1, &buf[3], i - 3) + write(1, &buf[bc], len));
+		}
+		else if (!(mod.flag & F_MINUS) && padd == '0')/* extra char to left of padd */
+		{
+			if (flag_ch)
+				buf[--padd_start] = flag_ch;
+			buf[1] = '0';
+			buf[2] = 'x';
+			return (write(1, &buf[padd_start], i - padd_start) +
+				write(1, &buf[bc], len - (1 - padd_start) - 2));
+		}
+	}
+	buf[--bc] = 'x';
+	buf[--bc] = '0';
+	if (flag_ch)
+		buf[--bc] = flag_ch;
+	return (write(1, &buf[bc], BUF_SIZE - bc));
 }
 
 /**

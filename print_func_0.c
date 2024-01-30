@@ -24,22 +24,26 @@ void print_buffer(char *buf, int *bc)
  */
 int print_char(char buf[], va_list ap, mod_t mod)
 {
-	int bc = 0;
+	int bc = 0, i;
 	char c = va_arg(ap, int), padd = ' ';
 
 	if (mod.flag & F_ZERO)
 		padd = '0';
 	buf[bc++] = c;
-	while (--mod.width > 1)
-	{
-		buf[bc++] = padd;
-	}
 	buf[bc] = '\0';
 
-	if (!(mod.flag & F_MINUS))
+	if (mod.width > 1)
 	{
-		buf[0] = padd;
-		buf[bc - 1] = c;
+		buf[BUF_SIZE - 1] = '\0';
+		for (i = 0; i < mod.width - 1; i++)
+			buf[BUF_SIZE - i - 2] = padd;
+
+		if (mod.flag & F_MINUS)
+			return (write(1, &buf[0], 1) +
+					write(1, &buf[BUF_SIZE - i - 1], mod.width - 1));
+		else
+			return (write(1, &buf[BUF_SIZE - i - 1], mod.width - 1) +
+					write(1, &buf[0], 1));
 	}
 
 	return (write(1, &buf[0], bc));
@@ -90,29 +94,67 @@ int print_percent(char buf[], va_list ap, mod_t mod)
  */
 int print_decimal(char buf[], va_list ap, mod_t mod)
 {
-	int i = 0, len;
-	long int num = va_arg(ap, int), decimal;
+	int bc = BUF_SIZE - 1, len, i, padd_start = 1;
+	long int num = va_arg(ap, int);
+	char padd = ' ', flag_ch = 0;
+
+	num = convert_size_number(num, mod);
 
 	if (num == 0)
-		return (write(1, "0", 1));
+		buf[bc--] = '0';
+	if ((mod.flag & F_ZERO) && !(mod.flag & F_MINUS))
+		padd = '0';
 	if (num < 0)
-		num *= -1, buf[i++] = '-';
+		num *= -1, flag_ch = '-';
 	else if (mod.flag & F_PLUS)
-		buf[i++] = '+';
+		flag_ch = '+';
 	else if (mod.flag & F_SPACE)
-		buf[i++] = ' ';
-	decimal = num;
-	while (decimal != 0)
-		decimal /= 10, i++;
-
-	len = i;
-	buf[i--] = '\0';
-	while (num != 0)
+		flag_ch = ' ';
+	len = bc;
+	buf[BUF_SIZE] = '\0';
+	while (num > 0)
 	{
-		buf[i--] = '0' + (num % 10);
+		buf[bc--] = '0' + (num % 10);
 		num /= 10;
 	}
-
-	return (write(1, &buf[0], len));
+	len = BUF_SIZE - ++bc;
+	if (mod.precision == 0 && bc == BUF_SIZE - 2 && buf[bc] == '0' && mod.width == 0)
+		return (0); /* printf(".0d", 0)  no char is printed */
+	if (mod.precision == 0 && bc == BUF_SIZE - 2 && buf[bc] == '0')
+		buf[bc] = padd = ' '; /* mod.width is displayed with padding ' ' */
+	if (mod.precision > 0 && mod.precision < len)
+		padd = ' ';
+	while (mod.precision > len)
+		buf[--bc] = '0', len++;
+	if (flag_ch != 0)
+		len++;
+	if (mod.width > len)
+	{
+		for (i = 1; i < mod.width - len + 1; i++)
+			buf[i] = padd;
+		buf[i] = '\0';
+		if (mod.flag & F_MINUS && padd == ' ')/* Asign extra char to left of buf */
+		{
+			if (flag_ch)
+				buf[--bc] = flag_ch;
+			return (write(1, &buf[bc], len) + write(1, &buf[1], i - 1));
+		}
+		else if (!(mod.flag & F_MINUS) && padd == ' ')/* extra char to left of buff */
+		{
+			if (flag_ch)
+				buf[--bc] = flag_ch;
+			return (write(1, &buf[1], i - 1) + write(1, &buf[bc], len));
+		}
+		else if (!(mod.flag & F_MINUS) && padd == '0')/* extra char to left of padd */
+		{
+			if (flag_ch)
+				buf[--padd_start] = flag_ch;
+			return (write(1, &buf[padd_start], i - padd_start) +
+				write(1, &buf[bc], len - (1 - padd_start)));
+		}
+	}
+	if (flag_ch)
+		buf[--bc] = flag_ch;
+	return (write(1, &buf[bc], len));
 }
 
