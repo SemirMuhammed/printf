@@ -55,7 +55,7 @@ int print_unsigned(char buf[], va_list ap, mod_t mod)
 	int i = 0, len;
 	unsigned long int num = va_arg(ap, unsigned int), decimal;
 
-	(void)(mod);
+	num = convert_size_unsigned(num, mod);
 	if (num == 0)
 		return (write(1, "0", 1));
 	decimal = num;
@@ -67,10 +67,6 @@ int print_unsigned(char buf[], va_list ap, mod_t mod)
 
 	len = i;
 	buf[i--] = '\0';
-	if (mod.length == L_LONG)
-		num = (long)num;
-	else if (mod.length == L_SHORT)
-		num = (short)num;
 	while (num)
 	{
 		buf[i--] = '0' + (num % 10);
@@ -91,21 +87,19 @@ int print_unsigned(char buf[], va_list ap, mod_t mod)
 int print_octal(char buf[], va_list ap, mod_t mod)
 {
 	int i = BUF_SIZE - 1, len;
-	unsigned long int num = va_arg(ap, unsigned int);
+	unsigned long int num = va_arg(ap, unsigned int), HASH_num = num;
 
-	(void)(mod);
+	num = convert_size_unsigned(num, mod);
 	if (num == 0)
 		buf[i--] = '0';
 	buf[BUF_SIZE] = '\0';
-	if (mod.length == L_LONG)
-		num = (long)num;
-	else if (mod.length == L_SHORT)
-		num = (short)num;
 	while (num)
 	{
 		buf[i--] = '0' + (num % 8);
 		num /= 8;
 	}
+	if (mod.flag & F_HASHTAG && HASH_num != 0)
+		buf[i--] = '0';
 
 	i++;
 	len = BUF_SIZE - i;
@@ -126,14 +120,10 @@ int print_hexa_lower(char buf[], va_list ap, mod_t mod)
 	int i = BUF_SIZE - 1, len;
 	unsigned long int num = va_arg(ap, unsigned int);
 
-	(void)(mod);
+	num = convert_size_unsigned(num, mod);
 	if (num == 0)
 		buf[i--] = '0';
 	buf[BUF_SIZE] = '\0';
-	if (mod.length == L_LONG)
-		num = (long)num;
-	else if (mod.length == L_SHORT)
-		num = (short)num;
 	while (num)
 	{
 		if ((num % 16) > 9)

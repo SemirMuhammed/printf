@@ -79,5 +79,6 @@ int print_rot13string(char buf[], va_list ap, mod_t mod);
 
 int _strlen(char *str);
 char *int_to_string(int num);
+long int convert_size_unsigned(unsigned long int num, mod_t mod);
 
 #endif /* MAIN_H */

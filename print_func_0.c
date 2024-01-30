@@ -25,18 +25,20 @@ void print_buffer(char *buf, int *bc)
 int print_char(char buf[], va_list ap, mod_t mod)
 {
 	int bc = 0;
-	char c = va_arg(ap, int);
+	char c = va_arg(ap, int), padd = ' ';
 
+	if (mod.flag & F_ZERO)
+		padd = '0';
 	buf[bc++] = c;
-	while (--mod.width > 0)
+	while (--mod.width > 1)
 	{
-		buf[bc++] = ' ';
+		buf[bc++] = padd;
 	}
 	buf[bc] = '\0';
 
 	if (!(mod.flag & F_MINUS))
 	{
-		buf[0] = ' ';
+		buf[0] = padd;
 		buf[bc - 1] = c;
 	}
 
@@ -94,22 +96,15 @@ int print_decimal(char buf[], va_list ap, mod_t mod)
 	if (num == 0)
 		return (write(1, "0", 1));
 	if (num < 0)
-	{
-		num *= -1;
-		buf[0] = '-';
-		i++;
-	}
+		num *= -1, buf[i++] = '-';
+	else if (mod.flag & F_PLUS)
+		buf[i++] = '+';
+	else if (mod.flag & F_SPACE)
+		buf[i++] = ' ';
 	decimal = num;
 	while (decimal != 0)
-	{
-		decimal /= 10;
-		i++;
-	}
+		decimal /= 10, i++;
 
-	if (mod.length == L_LONG)
-		num = (long)num;
-	else if (mod.length == L_SHORT)
-		num = (short)num;
 	len = i;
 	buf[i--] = '\0';
 	while (num != 0)

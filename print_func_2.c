@@ -13,14 +13,10 @@ int print_hexa_upper(char buf[], va_list ap, mod_t mod)
 	int i = BUF_SIZE - 1, len;
 	unsigned long int num = va_arg(ap, unsigned int);
 
-	(void)(mod);
+	num = convert_size_unsigned(num, mod);
 	if (num == 0)
 		buf[i--] = '0';
 	buf[BUF_SIZE] = '\0';
-	if (mod.length == L_LONG)
-		num = (long)num;
-	else if (mod.length == L_SHORT)
-		num = (short)num;
 	while (num)
 	{
 		if ((num % 16) > 9)
@@ -111,6 +107,10 @@ int print_pointer(char buf[], va_list ap, mod_t mod)
 
 	buf[bc--] = 'x';
 	buf[bc] = '0';
+	if (mod.flag & F_PLUS)
+		buf[--bc] = '+';
+	else if (mod.flag & F_SPACE)
+		buf[--bc] = ' ';
 	len = BUF_SIZE - bc;
 
 	return (write(1, &buf[bc], len));
