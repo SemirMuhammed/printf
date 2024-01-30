@@ -101,7 +101,7 @@ int get_precision(const char *format, int *i, va_list ap)
 	int precision = 0;
 
 	if (format[*i] != '.')
-		return (precision);
+		return (-1);
 	(*i)++;
 	while (format[*i] != '\0')
 	{

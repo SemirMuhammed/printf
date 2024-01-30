@@ -16,7 +16,8 @@ int print_hexa_upper(char buf[], va_list ap, mod_t mod)
 
 	num = convert_size_unsign(num, mod);
 	if (num == 0)
-		return (write(1, "0", 1));
+		buf[bc--] = '0';
+		/* return (write(1, "0", 1)); */
 	buf[BUF_SIZE] = '\0';
 	while (num)
 	{
