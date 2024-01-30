@@ -50,9 +50,9 @@ int get_length(const char *format, int *i)
 	int length = L_NULL;
 
 	if (format[*i] == 'l')
-		length = L_LONG;
+		length |= L_LONG;
 	if (format[*i] == 'h')
-		length = L_SHORT;
+		length |= L_SHORT;
 	if (length)
 		(*i)++;
 	return (length);

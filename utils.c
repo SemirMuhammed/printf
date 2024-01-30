@@ -24,9 +24,9 @@ int _strlen(char *str)
  */
 long int convert_size_number(long int num, mod_t mod)
 {
-	if (mod.length == L_LONG)
+	if (mod.length & L_LONG)
 		return (num);
-	else if (mod.length == L_SHORT)
+	else if (mod.length & L_SHORT)
 		return ((short)num);
 
 	return ((int)num);
@@ -41,9 +41,9 @@ long int convert_size_number(long int num, mod_t mod)
  */
 long int convert_size_unsign(unsigned long int num, mod_t mod)
 {
-	if (mod.length == L_LONG)
+	if (mod.length & L_LONG)
 		return (num);
-	else if (mod.length == L_SHORT)
+	else if (mod.length & L_SHORT)
 		return ((unsigned short)num);
 
 	return ((unsigned int)num);
