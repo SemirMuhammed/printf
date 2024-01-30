@@ -106,3 +106,61 @@ int print_pointer(char buf[], va_list ap)
 	return (write(1, &buf[bc], len));
 
 }
+
+/**
+ * print_reverse - Prints reverse string.
+ * @ap: List of arguments
+ * @buf: Buffer array to handle print
+ *
+ * Return: Numbers of chars printed
+ */
+
+int print_reverse(char buf[], va_list ap)
+{
+	char *str = va_arg(ap, char *);
+	int i, bc = 0;
+
+	if (str == NULL)
+		str = ")Null(";
+	i = _strlen(str) - 1;
+	while (i >= 0)
+		buf[bc++] = str[i--];
+	return (write(1, &buf[0], bc));
+}
+/**
+ * print_rot13string - Print a string in rot13.
+ * @ap: List of arguments
+ * @buf: Buffer array to handle print
+ *
+ * Return: Numbers of chars printed
+ */
+int print_rot13string(char buf[], va_list ap)
+{
+	char *str;
+	unsigned int i, j;
+	int bc = 0;
+	char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	char out[] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
+
+	str = va_arg(ap, char *);
+
+	if (str == NULL)
+		str = "(AHYY)";
+	for (i = 0; str[i]; i++)
+	{
+		for (j = 0; in[j]; j++)
+		{
+			if (in[j] == str[i])
+			{
+				buf[bc++] = out[j];
+				break;
+			}
+		}
+		if (!in[j])
+		{
+			buf[bc++] = str[i];
+		}
+	}
+	buf[bc] = '\0';
+	return (write(1, &buf[0], bc));
+}

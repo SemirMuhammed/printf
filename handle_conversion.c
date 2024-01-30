@@ -25,6 +25,8 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 		{'X', print_hexa_upper},
 		{'S', print_non_string},
 		{'p', print_pointer},
+		{'r', print_reverse},
+		{'R', print_rot13string},
 		{'\0', NULL}
 	};
 

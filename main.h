@@ -58,6 +58,8 @@ int print_hexa_lower(char buf[], va_list ap);
 int print_hexa_upper(char buf[], va_list ap);
 int print_non_string(char buf[], va_list ap);
 int print_pointer(char buf[], va_list ap);
+int print_reverse(char buf[], va_list ap);
+int print_rot13string(char buf[], va_list ap);
 
 int _strlen(char *str);
 char *int_to_string(int num);
