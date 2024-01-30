@@ -18,31 +18,45 @@ void print_buffer(char *buf, int *bc)
  * print_char - calls write to print char parameter
  * @buf: buffer
  * @ap: argument parameter
+ * @mod: structure of modifiers
  *
  * Return: number of characters printed
  */
-int print_char(char buf[], va_list ap)
+int print_char(char buf[], va_list ap, mod_t mod)
 {
+	int bc = 0;
 	char c = va_arg(ap, int);
 
-	buf[0] = c;
-	buf[1] = '\0';
+	buf[bc++] = c;
+	while (--mod.width > 0)
+	{
+		buf[bc++] = ' ';
+	}
+	buf[bc] = '\0';
 
-	return (write(1, &buf[0], 1));
+	if (!(mod.flag & F_MINUS))
+	{
+		buf[0] = ' ';
+		buf[bc - 1] = c;
+	}
+
+	return (write(1, &buf[0], bc));
 }
 
 /**
  * print_string - calls write to print string parameter
  * @buf: buffer
  * @ap: argument parameter
+ * @mod: structure of modifiers
  *
  * Return: number of characters printed
  */
-int print_string(char buf[], va_list ap)
+int print_string(char buf[], va_list ap, mod_t mod)
 {
 	char *str = va_arg(ap, char *);
 
 	(void)(buf);
+	(void)(mod);
 	if (str == NULL)
 		str = "(null)";
 	return (write(1, &str[0], _strlen(str)));
@@ -52,13 +66,15 @@ int print_string(char buf[], va_list ap)
  * print_percent - calls write to print pecent
  * @buf: buffer
  * @ap: argument parameter
+ * @mod: structure of modifiers
  *
  * Return: number of characters printed
  */
-int print_percent(char buf[], va_list ap)
+int print_percent(char buf[], va_list ap, mod_t mod)
 {
 	(void)(buf);
 	(void)(ap);
+	(void)(mod);
 	return (write(1, "%%", 1));
 }
 
@@ -66,10 +82,11 @@ int print_percent(char buf[], va_list ap)
  * print_decimal - calls write to print decimal
  * @buf: buffer
  * @ap: argument parameter
+ * @mod: structure of modifiers
  *
  * Return: number of characters printed
  */
-int print_decimal(char buf[], va_list ap)
+int print_decimal(char buf[], va_list ap, mod_t mod)
 {
 	int i = 0, len;
 	long int num = va_arg(ap, int), decimal;
@@ -89,6 +106,10 @@ int print_decimal(char buf[], va_list ap)
 		i++;
 	}
 
+	if (mod.length == L_LONG)
+		num = (long)num;
+	else if (mod.length == L_SHORT)
+		num = (short)num;
 	len = i;
 	buf[i--] = '\0';
 	while (num != 0)

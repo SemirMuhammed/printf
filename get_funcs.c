@@ -14,8 +14,8 @@ int get_flag(const char *format, int *i)
 		{'+', F_PLUS},
 		{' ', F_SPACE},
 		{'#', F_HASHTAG},
-		{'#', F_ZERO},
-		{'#', F_MINUS},
+		{'0', F_ZERO},
+		{'-', F_MINUS},
 		{'\0', F_NULL}
 	};
 

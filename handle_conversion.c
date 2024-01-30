@@ -9,7 +9,7 @@
  *
  * Return: 1 or 2
  */
-int handle_conversion(const char *format, int *i, char buf[], va_list ap)
+int handle_conv(const char *format, int *i, char buf[], va_list ap, mod_t mod)
 {
 	int j = -1, fs_c = -1;
 	conv_t conv_list[] = {
@@ -32,7 +32,7 @@ int handle_conversion(const char *format, int *i, char buf[], va_list ap)
 
 	while (conv_list[++j].sp != '\0')
 		if (conv_list[j].sp == format[*i])
-			return (conv_list[j].func(buf, ap));
+			return (conv_list[j].func(buf, ap, mod));
 
 	if (format[*i] == '\0')
 		return (fs_c);

@@ -18,17 +18,6 @@
 #define L_SHORT 2
 
 /**
- * struct conv - Stucture of conversion specifiers
- * @sp: specifier indicator
- * @func: the function associated with the specifier
- */
-typedef struct conv
-{
-	char sp;
-	int (*func)(char [], va_list);
-} conv_t;
-
-/**
  * struct flag - Stucture of flag attribute
  * @f_char: flag indicator
  * @f_int: flag value
@@ -54,29 +43,39 @@ typedef struct mod
 	int length;
 } mod_t;
 
+/**
+ * struct conv - Stucture of conversion specifiers
+ * @sp: specifier indicator
+ * @func: the function associated with the specifier
+ */
+typedef struct conv
+{
+	char sp;
+	int (*func)(char [], va_list, mod_t);
+} conv_t;
 
 int _printf(const char *format, ...);
 void print_buffer(char *buf, int *bc);
-int handle_conversion(const char *format, int *i, char *buffer, va_list ap);
+int handle_conv(const char *format, int *i,char *buffer, va_list ap, mod_t mod);
 int get_flag(const char *format, int *i);
 int get_width(const char *format, int *i);
 int get_precision(const char *format, int *i);
 int get_length(const char *format, int *i);
 
-int print_char(char buf[], va_list ap);
-int print_string(char buf[], va_list ap);
-int print_percent(char buf[], va_list ap);
-int print_decimal(char buf[], va_list ap);
-int print_integer(char buf[], va_list ap);
-int print_binary(char buf[], va_list ap);
-int print_unsigned(char buf[], va_list ap);
-int print_octal(char buf[], va_list ap);
-int print_hexa_lower(char buf[], va_list ap);
-int print_hexa_upper(char buf[], va_list ap);
-int print_non_string(char buf[], va_list ap);
-int print_pointer(char buf[], va_list ap);
-int print_reverse(char buf[], va_list ap);
-int print_rot13string(char buf[], va_list ap);
+int print_char(char buf[], va_list ap, mod_t mod);
+int print_string(char buf[], va_list ap, mod_t mod);
+int print_percent(char buf[], va_list ap, mod_t mod);
+int print_decimal(char buf[], va_list ap, mod_t mod);
+int print_integer(char buf[], va_list ap, mod_t mod);
+int print_binary(char buf[], va_list ap, mod_t mod);
+int print_unsigned(char buf[], va_list ap, mod_t mod);
+int print_octal(char buf[], va_list ap, mod_t mod);
+int print_hexa_lower(char buf[], va_list ap, mod_t mod);
+int print_hexa_upper(char buf[], va_list ap, mod_t mod);
+int print_non_string(char buf[], va_list ap, mod_t mod);
+int print_pointer(char buf[], va_list ap, mod_t mod);
+int print_reverse(char buf[], va_list ap, mod_t mod);
+int print_rot13string(char buf[], va_list ap, mod_t mod);
 
 int _strlen(char *str);
 char *int_to_string(int num);

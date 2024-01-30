@@ -39,7 +39,7 @@ int _printf(const char *format, ...)
 			mod.width = get_width(format, &i);
 			mod.precision = get_precision(format, &i);
 			mod.length = get_length(format, &i);
-			fs_c = handle_conversion(format, &i, buf, ap);
+			fs_c = handle_conv(format, &i, buf, ap, mod);
 			if (fs_c == -1)
 				return (-1);
 			c += fs_c;
