@@ -1,7 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <cstdarg>
 #include <stdarg.h>
 #include <unistd.h>
 
