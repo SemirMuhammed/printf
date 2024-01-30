@@ -129,11 +129,11 @@ int print_pointer(char buf[], va_list ap, mod_t mod)
 	if (ptr == NULL)
 		return (write(1, "(nil)", 5));
 
-	buf[BUF_SIZE] = '\0';
 	address = (unsigned long)(ptr);
 	if (address == 0)
 		buf[bc--] = '0';
-	while (address > 0)
+	buf[BUF_SIZE] = '\0';
+	while (address)
 	{
 		if ((address % 16) > 9)
 			buf[bc--] = '0' + (address % 16) + 39;
@@ -181,11 +181,13 @@ int print_pointer(char buf[], va_list ap, mod_t mod)
 				write(1, &buf[bc], len - (1 - padd_start) - 2));
 		}
 	}
-	buf[--bc] = 'x';
-	buf[--bc] = '0';
+	buf[bc--] = 'x';
+	buf[bc] = '0';
 	if (flag_ch)
 		buf[--bc] = flag_ch;
-	return (write(1, &buf[bc], BUF_SIZE - bc));
+	len = BUF_SIZE - bc;
+
+	return (write(1, &buf[bc], len));
 }
 
 /**
