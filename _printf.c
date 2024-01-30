@@ -36,8 +36,8 @@ int _printf(const char *format, ...)
 			print_buffer(buf, &bc);
 			i++;
 			mod.flag = get_flag(format, &i);
-			mod.width = get_width(format, &i);
-			mod.precision = get_precision(format, &i);
+			mod.width = get_width(format, &i, ap);
+			mod.precision = get_precision(format, &i, ap);
 			mod.length = get_length(format, &i);
 			fs_c = handle_conv(format, &i, buf, ap, mod);
 			if (fs_c == -1)

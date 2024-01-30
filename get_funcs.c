@@ -65,7 +65,7 @@ int get_length(const char *format, int *i)
  *
  * Return: field width
  */
-int get_width(const char *format, int *i)
+int get_width(const char *format, int *i, va_list ap)
 {
 	int width = 0;
 
@@ -75,6 +75,12 @@ int get_width(const char *format, int *i)
 		{
 			width *= 10;
 			width += format[(*i)++] - '0';
+		}
+		else if (format[*i] == '*')
+		{
+			(*i)++;
+			width = va_arg(ap, int);
+			break;
 		}
 		else
 			break;
@@ -90,7 +96,7 @@ int get_width(const char *format, int *i)
  *
  * Return: precision number
  */
-int get_precision(const char *format, int *i)
+int get_precision(const char *format, int *i, va_list ap)
 {
 	int precision = 0;
 
@@ -103,6 +109,12 @@ int get_precision(const char *format, int *i)
 		{
 			precision *= 10;
 			precision += format[(*i)++] - '0';
+		}
+		else if (format[*i] == '*')
+		{
+			(*i)++;
+			precision = va_arg(ap, int);
+			break;
 		}
 		else
 			break;

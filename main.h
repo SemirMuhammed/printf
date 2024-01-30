@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <cstdarg>
 #include <stdarg.h>
 #include <unistd.h>
 
@@ -58,8 +59,8 @@ int _printf(const char *format, ...);
 void print_buffer(char *buf, int *bc);
 int handle_conv(const char *format, int *i, char buf[], va_list ap, mod_t mod);
 int get_flag(const char *format, int *i);
-int get_width(const char *format, int *i);
-int get_precision(const char *format, int *i);
+int get_width(const char *format, int *i, va_list ap);
+int get_precision(const char *format, int *i, va_list ap);
 int get_length(const char *format, int *i);
 
 int print_char(char buf[], va_list ap, mod_t mod);
