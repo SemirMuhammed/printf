@@ -110,7 +110,6 @@ int print_decimal(char buf[], va_list ap, mod_t mod)
 		flag_ch = '+';
 	else if (mod.flag & F_SPACE)
 		flag_ch = ' ';
-	len = bc;
 	buf[BUF_SIZE] = '\0';
 	while (num > 0)
 	{
