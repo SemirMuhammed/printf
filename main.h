@@ -57,6 +57,7 @@ typedef struct conv
 int _printf(const char *format, ...);
 void print_buffer(char *buf, int *bc);
 int handle_conv(const char *format, int *i, char buf[], va_list ap, mod_t mod);
+
 int get_flag(const char *format, int *i);
 int get_width(const char *format, int *i, va_list ap);
 int get_precision(const char *format, int *i, va_list ap);

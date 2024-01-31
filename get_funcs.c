@@ -62,6 +62,7 @@ int get_length(const char *format, int *i)
  * get_width - identify the width attribute
  * @format: format
  * @i: iteration of format
+ * @ap: argument parameter
  *
  * Return: field width
  */
@@ -93,6 +94,7 @@ int get_width(const char *format, int *i, va_list ap)
  * get_precision - identify the precision attribute
  * @format: format
  * @i: iteration of format
+ * @ap: argument parameter
  *
  * Return: precision number
  */
